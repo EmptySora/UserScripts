@@ -1,0 +1,14 @@
+{
+    "name": "Demo UserScript",
+    "description": "Demonstration of webhosted userscript",
+    "run-at": "document-start",
+    "include": [
+        "*://*.emptysora.com/*",
+        "*://emptysora.com/*",
+        "*://*.emptysora.com/",
+        "*://emptysora.com/"
+    ],
+    "grant": "unsafeWindow",
+    "version": "3"
+}
+
