@@ -1,0 +1,9 @@
+{
+    "name": "Table column extracter",
+    "description": "Adds various helper methods to extract columns from HTML tables",
+    "run-at": "document-start",
+    "include": "*",
+    "grant": "unsafeWindow",
+    "version": "1"
+}
+

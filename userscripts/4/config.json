@@ -1,0 +1,9 @@
+{
+    "name": "tableIDs",
+    "description": "adds an id to the table we need to export \"targetTable\"",
+    "run-at": "document-start",
+    "include": "*://downloads.khinsider.com/game-soundtracks/album/*",
+    "grant": "unsafeWindow",
+    "version": "1"
+}
+

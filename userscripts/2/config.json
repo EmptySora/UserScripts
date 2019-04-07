@@ -1,0 +1,8 @@
+{
+    "name": "RemoveBadIframe",
+    "run-at": "document-start",
+    "include": "*",
+    "grant": "unsafeWindow",
+    "version": "1"
+}
+

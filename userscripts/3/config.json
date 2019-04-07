@@ -1,0 +1,12 @@
+{
+    "name": "Download YouTube Videos",
+    "description": "Allows you to download any youtube video so long as you are using the HTML5 video player",
+    "run-at": "document-start",
+    "include": [
+        "*://*.youtube.com/*",
+        "*://youtube.com/*"
+    ],
+    "grant": "unsafeWindow",
+    "version": "1"
+}
+

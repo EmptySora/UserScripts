@@ -1,0 +1,15 @@
+{
+    "name": "Repeat Standalone File",
+    "description": "adds \"loop\" to the audio src",
+    "run-at": "document-start",
+    "include": [
+        "*.mp3",
+        "*.ogg",
+        "*.oga",
+        "*.m4a",
+        "*.aac"
+    ],
+    "grant": "unsafeWindow",
+    "version": "1"
+}
+

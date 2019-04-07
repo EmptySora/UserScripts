@@ -1,0 +1,9 @@
+{
+    "name": "YouRepeat",
+    "description": "adds a youtube repeat button",
+    "run-at": "document-start",
+    "include": "https://www.youtube.com/watch*",
+    "grant": "unsafeWindow",
+    "version": "1"
+}
+
