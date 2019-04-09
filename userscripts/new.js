@@ -401,7 +401,695 @@ Function.prototype.bind = function() {
         return thatFunc.apply(thatArg, args);
     };
 };
+Date.prototype.toISOString = function() {
+    function pad(number) {
+        if (number < 10) {
+            return '0' + number;
+        }
+        return number;
+    }
+    return this.getUTCFullYear() +
+        '-' + pad(this.getUTCMonth() + 1) +
+        '-' + pad(this.getUTCDate()) +
+        'T' + pad(this.getUTCHours()) +
+        ':' + pad(this.getUTCMinutes()) +
+        ':' + pad(this.getUTCSeconds()) +
+        '.' + (this.getUTCMilliseconds() / 1000).toFixed(3).slice(2, 5) +
+        'Z';
+};
+Date.prototype.toJSON = function() {
+    return this.toISOString();
+};
+Date.now = function() {
+    return new Date().getTime();
+};
+Math.acosh = function(x) {
+    return Math.log(x + Math.sqrt(x * x - 1));
+};
+Math.asinh = function(x) {
+    return (x === -Infinity) 
+        ? x
+        : Math.log(x + Math.sqrt(x * x + 1));
+};
+Math.atanh = function(x) {
+    return Math.log((1+x)/(1-x)) / 2;
+};
+Math.cbrt = function(x) {
+    return x < 0 
+        ? -Math.pow(-x, 1/3)
+        : Math.pow(x, 1/3);
+};
+Math.clz32 = function(x) {
+    return (x === null || x === 0)
+        ? 32
+        : 31 - (Math.log(x >>> 0) / Math.LN2 | 0); 
+};
+Math.cosh = function(x) {
+    var y = Math.exp(x);
+    return (y+1/y)/2;
+};
+Math.expm1 = function(x) {
+    return Math.exp(x) - 1;
+};
+Math.fround = function(arg) {
+    arg = Number(arg);
+    if (!arg) {
+        return arg;
+    }
+    var sign = (arg < 0)
+        ? -1
+        : 1;
+    if (sign < 0) {
+        arg = -arg;
+    }
+    var exp = Math.floor(Math.log(arg) / Math.LN2);
+    var powexp = Math.pow(2, Math.max(-126, Math.min(exp, 127)));
+    var leading = (exp < -127)
+        ? 0
+        : 1;
+    var mantissa = Math.round((leading - arg / powexp) * 0x800000);
+    if (mantissa <= -0x800000) {
+        return sign * Infinity;
+    }
+    return sign * powexp * (leading - mantissa / 0x800000);
+};
+Math.hypot = function (x, y) {
+    var max = 0;
+    var s = 0;
+    var i;
+    var arg;
+    for (i = 0; i < arguments.length; i += 1) {
+        arg = Math.abs(Number(arguments[i]));
+        if (arg > max) {
+            s *= (max/arg)*(max/arg);
+            max = arg;
+        }
+        s += ((arg === 0) && (max === 0))
+            ? 0
+            : (arg/max)*(arg/max);
+    }
+    return (max === 1/0)
+        ? 1/0
+        : max * Math.sqrt(s);
+};
+Math.imul = function(opA, opB) {
+    opB |= 0;
+    var result = (opA & 0x001fffff) * opB;
+    if (opA & 0xffc00000) {
+        result += (opA & 0xffc00000) * opB |0;
+    }
+    return result | 0;
+};
+Math.log1p = function(x) {
+    return Math.log(1 + x);
+};
+Math.log10 = function(x) {
+    return Math.log(x) * Math.LOG10E;
+};
+Math.log2 = function(x) {
+    return Math.log(x) * Math.LOG2E;
+};
+Math.sign = function(x) {
+    return ((x > 0) - (x < 0)) || +x;
+};
+Math.sinh = function(x) {
+    var y = Math.exp(x);
+    return (y-1/y)/2;
+};
+Math.tanh = function(x){
+    var a = Math.exp(+x)
+    var b = Math.exp(-x);
+    return (a === Infinity)
+        ? 1
+        : ((b === Infinity)
+            ? -1
+            : (a-b)/(a+b));
+};
+Math.trunc = function(v) {
+    v = +v;
+    return (v - v % 1) || (!isFinite(v) || v === 0 ? v : v < 0 ? -0 : 0);
+    //ugh this is too unreadable...
+};
+Number.EPSILON = Math.pow(2, -52);
+Number.MAX_SAFE_INTEGER = Math.pow(2, 53) - 1;
+Number.MIN_SAFE_INTEGER = -(Math.pow(2, 53) - 1);
+Number.isNaN = function(value) {     
+    return value !== value;
+};
+Number.isFinite = function(value) {
+    return (typeof value === 'number') && isFinite(value);
+};
+Number.isInteger = function(value) {
+    return (typeof value === 'number') && isFinite(value) && (Math.floor(value) === value);
+};
+Number.isSafeInteger = function (value) {
+    return Number.isInteger(value) && (Math.abs(value) <= Number.MAX_SAFE_INTEGER);
+};
+Number.parseFloat = parseFloat;
+Number.parseInt = parseInt;
 /****  END  POLYFILL SECTION ****/
+
+/*
+MISSING: globalThis
+MISSING: Symbol
+MISSING: InternalError
+MISSING: BigInt
+MISSING: Int8Array
+MISSING: Uint8Array
+MISSING: Uint8ClampedArray
+MISSING: Int16Array
+MISSING: Uint16Array
+MISSING: Int32Array
+MISSING: Uint32Array
+MISSING: Float32Array
+MISSING: Float64Array
+MISSING: Map
+MISSING: Set
+MISSING: WeakMap
+MISSING: WeakSet
+MISSING: ArrayBuffer
+MISSING: DataView
+MISSING: Promise
+MISSING: Generator
+MISSING: GeneratorFunction
+MISSING: Reflect
+MISSING: Proxy
+MISSING: Intl
+MISSING: WebAssembly
+
+
+MISSING: Object.assign
+MISSING: Object.create
+MISSING: Object.defineProperty
+MISSING: Object.defineProperties
+MISSING: Object.entries
+MISSING: Object.freeze
+MISSING: Object.fromEntries
+MISSING: Object.getOwnPropertyDescriptor
+MISSING: Object.getOwnPropertyDescriptors
+MISSING: Object.getOwnPropertyNames
+MISSING: Object.getOwnPropertySymbols
+MISSING: Object.getPrototypeOf
+MISSING: Object.is
+MISSING: Object.isExtensible
+MISSING: Object.isFrozen
+MISSING: Object.isSealed
+MISSING: Object.keys
+MISSING: Object.preventExtensions
+MISSING: Object.seal
+MISSING: Object.setPrototypeOf
+MISSING: Object.values
+
+MISSING: String.fromCodePoint
+MISSING: String.raw
+
+MISSING: Array.from
+MISSING: Array.isArray
+MISSING: Array.of
+
+
+MISSING: Function.prototype.name
+MISSING: Function.prototype.isGenerator
+
+MISSING: Date.prototype.toLocaleFormat
+
+MISSING: String.prototype.codePointAt
+MISSING: String.prototype.matchAll
+MISSING: String.prototype.normalize
+
+MISSING: RegExp.prototype.flags
+MISSING: RegExp.prototype.dotAll
+MISSING: RegExp.prototype.sticky
+MISSING: RegExp.prototype.unicode
+
+MISSING: Array.prototype.entries
+MISSING: Array.prototype.keys
+MISSING: Array.prototype.reduce
+MISSING: Array.prototype.reduceRight
+MISSING: Array.prototype.values
+
+
+MISSING: Object.prototype.toSource
+MISSING: Boolean.prototype.toSource
+MISSING: Number.prototype.toSource
+MISSING: Array.prototype.toSource
+MISSING: RegExp.prototype.toSource
+MISSING: String.prototype.toSource
+MISSING: Date.prototype.toSource
+MISSING: Function.prototype.toSource
+MISSING: Math.toSource
+
+
+MISSING: Number.toInteger [DEPRECATED]
+MISSING: String.prototype.quote [DEPRECATED]
+MISSING: Object.prototype.__proto__ [DEPRECATED]
+MISSING: Object.prototype.__noSuchMethod__ [DEPRECATED]
+MISSING: Object.prototype.__count__ [DEPRECATED]
+MISSING: Object.prototype.__parent__ [DEPRECATED]
+MISSING: Object.prototype.__defineGetter__ [DEPRECATED]
+MISSING: Object.prototype.__defineSetter__ [DEPRECATED]
+MISSING: Object.prototype.__lookupGetter__ [DEPRECATED]
+MISSING: Object.prototype.__lookupSetter__ [DEPRECATED]
+MISSING: Object.prototype.eval [DEPRECATED]
+MISSING: Function.prototype.arguments [DEPRECATED]
+MISSING: Function.prototype.arity [DEPRECATED]
+
+MISSING: Object.prototype.unwatch [NOT STANDARDIZED]
+MISSING: Object.prototype.watch [NOT STANDARDIZED]
+MISSING: Function.prototype.caller [NOT STANDARDIZED]
+MISSING: Function.prototype.displayName [NOT STANDARDIZED]
+MISSING: this.uneval [NOT STANDARDIZED]
+
+MISSING: this.SharedArrayBuffer [EXPERIMENTAL]
+MISSING: this.Atomics [EXPERIMENTAL]
+MISSING: this.AsyncFunction [EXPERIMENTAL]
+*/
+
+
+/*
+
+
+
+Polyfills:
+JSON
+JSON.stringify
+JSON.parse
+String.prototype.startsWith
+String.prototype.endsWith
+String.prototype.trim
+String.prototype.trimStart
+String.prototype.trimEnd
+String.prototype.trimLeft
+String.prototype.trimRight
+String.prototype.repeat
+String.prototype.padStart
+String.prototype.padEnd
+String.prototype.includes
+Array.prototype.copyWithin
+Array.prototype.fill
+Array.prototype.includes
+Array.prototype.indexOf
+Array.prototype.lastIndexOf
+Array.prototype.every
+Array.prototype.filter
+Array.prototype.find
+Array.prototype.findIndex
+Array.prototype.forEach
+Array.prototype.map
+Array.prototype.some
+Function.prototype.bind
+Date.prototype.toISOString
+Date.prototype.toJSON
+Date.now
+Math.acosh
+Math.asinh
+Math.atanh
+Math.cbrt
+Math.clz32
+Math.cosh
+Math.expm1
+Math.fround
+Math.hypot
+Math.imul
+Math.log1p
+Math.log10
+Math.log2
+Math.sign
+Math.sinh
+Math.tanh
+Math.trunc
+Number.EPSILON
+Number.MAX_SAFE_INTEGER
+Number.MIN_SAFE_INTEGER
+Number.isNaN
+Number.isFinite
+Number.isInteger
+Number.isSafeInteger
+Number.parseFloat
+Number.parseInt
+
+
+
+ORIGINAL::::
+
+
+
+
+
+
+
+
+
+
+
+
+
+PRESENT: typeof this.eval = "function"
+PRESENT: typeof this.isFinite = "function"
+PRESENT: typeof this.isNaN = "function"
+PRESENT: typeof this.parseFloat = "function"
+PRESENT: typeof this.parseInt = "function"
+PRESENT: typeof this.decodeURI = "function"
+PRESENT: typeof this.decodeURIComponent = "function"
+PRESENT: typeof this.encodeURI = "function"
+PRESENT: typeof this.encodeURIComponent = "function"
+PRESENT: typeof this.escape = "function"
+PRESENT: typeof this.unescape = "function"
+PRESENT: typeof this.Infinity = "number"
+PRESENT: typeof this.NaN = "number"
+PRESENT: typeof this.Object = "function"
+PRESENT: typeof this.Function = "function"
+PRESENT: typeof this.Boolean = "function"
+PRESENT: typeof this.Error = "function"
+PRESENT: typeof this.EvalError = "function"
+PRESENT: typeof this.RangeError = "function"
+PRESENT: typeof this.ReferenceError = "function"
+PRESENT: typeof this.SyntaxError = "function"
+PRESENT: typeof this.TypeError = "function"
+PRESENT: typeof this.URIError = "function"
+PRESENT: typeof this.Number = "function"
+PRESENT: typeof this.Math = "object"
+PRESENT: typeof this.Date = "function"
+PRESENT: typeof this.String = "function"
+PRESENT: typeof this.RegExp = "function"
+PRESENT: typeof this.Array = "function"
+MISSING: this.uneval [NON-STANDARD]
+MISSING: this.undefined
+MISSING: this.null
+MISSING: this.globalThis
+MISSING: this.Symbol
+MISSING: this.InternalError
+MISSING: this.BigInt
+MISSING: this.Int8Array
+MISSING: this.Uint8Array
+MISSING: this.Uint8ClampedArray
+MISSING: this.Int16Array
+MISSING: this.Uint16Array
+MISSING: this.Int32Array
+MISSING: this.Uint32Array
+MISSING: this.Float32Array
+MISSING: this.Float64Array
+MISSING: this.Map
+MISSING: this.Set
+MISSING: this.WeakMap
+MISSING: this.WeakSet
+MISSING: this.ArrayBuffer
+MISSING: this.SharedArrayBuffer
+MISSING: this.Atomics
+MISSING: this.DataView
+MISSING: this.JSON
+MISSING: this.Promise
+MISSING: this.Generator
+MISSING: this.GeneratorFunction
+MISSING: this.AsyncFunction
+MISSING: this.Reflect
+MISSING: this.Proxy
+MISSING: this.Intl
+MISSING: this.WebAssembly
+
+
+MISSING: Object.assign
+MISSING: Object.create
+MISSING: Object.defineProperty
+MISSING: Object.defineProperties
+MISSING: Object.entries
+MISSING: Object.freeze
+MISSING: Object.fromEntries
+MISSING: Object.getOwnPropertyDescriptor
+MISSING: Object.getOwnPropertyDescriptors
+MISSING: Object.getOwnPropertyNames
+MISSING: Object.getOwnPropertySymbols
+MISSING: Object.getPrototypeOf
+MISSING: Object.is
+MISSING: Object.isExtensible
+MISSING: Object.isFrozen
+MISSING: Object.isSealed
+MISSING: Object.keys
+MISSING: Object.preventExtensions
+MISSING: Object.seal
+MISSING: Object.setPrototypeOf
+MISSING: Object.values
+
+PRESENT: typeof Object.prototype.constructor = "function"
+PRESENT: typeof Object.prototype.hasOwnProperty = "function"
+PRESENT: typeof Object.prototype.isPrototypeOf = "function"
+PRESENT: typeof Object.prototype.propertyIsEnumerable = "function"
+PRESENT: typeof Object.prototype.toLocaleString = "function"
+PRESENT: typeof Object.prototype.toString = "function"
+PRESENT: typeof Object.prototype.valueOf = "function"
+MISSING: Object.prototype.__proto__
+MISSING: Object.prototype.__noSuchMethod__
+MISSING: Object.prototype.__count__
+MISSING: Object.prototype.__parent__
+MISSING: Object.prototype.__defineGetter__
+MISSING: Object.prototype.__defineSetter__
+MISSING: Object.prototype.__lookupGetter__
+MISSING: Object.prototype.__lookupSetter__
+MISSING: Object.prototype.toSource
+MISSING: Object.prototype.unwatch
+MISSING: Object.prototype.watch
+MISSING: Object.prototype.eval
+
+PRESENT: typeof Function.prototype.length = "number"
+PRESENT: typeof Function.prototype.constructor = "function"
+PRESENT: typeof Function.prototype.apply = "function"
+PRESENT: typeof Function.prototype.call = "function"
+PRESENT: typeof Function.prototype.toString = "function"
+MISSING: Function.prototype.arguments
+MISSING: Function.prototype.arity
+MISSING: Function.prototype.caller
+MISSING: Function.prototype.name
+MISSING: Function.prototype.displayName
+MISSING: Function.prototype.bind
+MISSING: Function.prototype.isGenerator
+MISSING: Function.prototype.toSource
+
+PRESENT: typeof Boolean.prototype.constructor = "function"
+PRESENT: typeof Boolean.prototype.toString = "function"
+PRESENT: typeof Boolean.prototype.valueOf = "function"
+MISSING: Boolean.prototype.toSource
+
+PRESENT: typeof Number.MAX_VALUE = "number"
+PRESENT: typeof Number.MIN_VALUE = "number"
+PRESENT: typeof Number.NaN = "number"
+PRESENT: typeof Number.NEGATIVE_INFINITY = "number"
+PRESENT: typeof Number.POSITIVE_INFINITY = "number"
+MISSING: Number.EPSILON
+MISSING: Number.MAX_SAFE_INTEGER
+MISSING: Number.MIN_SAFE_INTEGER
+MISSING: Number.isNaN
+MISSING: Number.isFinite
+MISSING: Number.isInteger
+MISSING: Number.isSafeInteger
+MISSING: Number.toInteger
+MISSING: Number.parseFloat
+MISSING: Number.parseInt
+
+PRESENT: typeof Number.prototype.toExponential = "function"
+PRESENT: typeof Number.prototype.toFixed = "function"
+PRESENT: typeof Number.prototype.toLocaleString = "function"
+PRESENT: typeof Number.prototype.toPrecision = "function"
+PRESENT: typeof Number.prototype.toString = "function"
+PRESENT: typeof Number.prototype.valueOf = "function"
+MISSING: Number.prototype.toSource
+
+PRESENT: typeof Math.E = "number"
+PRESENT: typeof Math.LN2 = "number"
+PRESENT: typeof Math.LN10 = "number"
+PRESENT: typeof Math.LOG2E = "number"
+PRESENT: typeof Math.LOG10E = "number"
+PRESENT: typeof Math.PI = "number"
+PRESENT: typeof Math.SQRT1_2 = "number"
+PRESENT: typeof Math.SQRT2 = "number"
+PRESENT: typeof Math.abs = "function"
+PRESENT: typeof Math.acos = "function"
+PRESENT: typeof Math.asin = "function"
+PRESENT: typeof Math.atan = "function"
+PRESENT: typeof Math.atan2 = "function"
+PRESENT: typeof Math.ceil = "function"
+PRESENT: typeof Math.cos = "function"
+PRESENT: typeof Math.exp = "function"
+PRESENT: typeof Math.floor = "function"
+PRESENT: typeof Math.log = "function"
+PRESENT: typeof Math.max = "function"
+PRESENT: typeof Math.min = "function"
+PRESENT: typeof Math.pow = "function"
+PRESENT: typeof Math.random = "function"
+PRESENT: typeof Math.round = "function"
+PRESENT: typeof Math.sin = "function"
+PRESENT: typeof Math.sqrt = "function"
+PRESENT: typeof Math.tan = "function"
+MISSING: Math.acosh
+MISSING: Math.asinh
+MISSING: Math.atanh
+MISSING: Math.cbrt
+MISSING: Math.clz32
+MISSING: Math.cosh
+MISSING: Math.expm1
+MISSING: Math.fround
+MISSING: Math.hypot
+MISSING: Math.imul
+MISSING: Math.log1p
+MISSING: Math.log10
+MISSING: Math.log2
+MISSING: Math.sign
+MISSING: Math.sinh
+MISSING: Math.tanh
+MISSING: Math.toSource
+MISSING: Math.trunc
+
+PRESENT: typeof Date.parse = "function"
+PRESENT: typeof Date.UTC = "function"
+MISSING: Date.now
+
+PRESENT: typeof Date.prototype.getDate = "function"
+PRESENT: typeof Date.prototype.getDay = "function"
+PRESENT: typeof Date.prototype.getFullYear = "function"
+PRESENT: typeof Date.prototype.getHours = "function"
+PRESENT: typeof Date.prototype.getMilliseconds = "function"
+PRESENT: typeof Date.prototype.getMinutes = "function"
+PRESENT: typeof Date.prototype.getMonth = "function"
+PRESENT: typeof Date.prototype.getSeconds = "function"
+PRESENT: typeof Date.prototype.getTime = "function"
+PRESENT: typeof Date.prototype.getTimezoneOffset = "function"
+PRESENT: typeof Date.prototype.getUTCDate = "function"
+PRESENT: typeof Date.prototype.getUTCDay = "function"
+PRESENT: typeof Date.prototype.getUTCFullYear = "function"
+PRESENT: typeof Date.prototype.getUTCHours = "function"
+PRESENT: typeof Date.prototype.getUTCMilliseconds = "function"
+PRESENT: typeof Date.prototype.getUTCMinutes = "function"
+PRESENT: typeof Date.prototype.getUTCMonth = "function"
+PRESENT: typeof Date.prototype.getUTCSeconds = "function"
+PRESENT: typeof Date.prototype.getYear = "function"
+PRESENT: typeof Date.prototype.setDate = "function"
+PRESENT: typeof Date.prototype.setFullYear = "function"
+PRESENT: typeof Date.prototype.setHours = "function"
+PRESENT: typeof Date.prototype.setMilliseconds = "function"
+PRESENT: typeof Date.prototype.setMinutes = "function"
+PRESENT: typeof Date.prototype.setMonth = "function"
+PRESENT: typeof Date.prototype.setSeconds = "function"
+PRESENT: typeof Date.prototype.setTime = "function"
+PRESENT: typeof Date.prototype.setUTCDate = "function"
+PRESENT: typeof Date.prototype.setUTCFullYear = "function"
+PRESENT: typeof Date.prototype.setUTCHours = "function"
+PRESENT: typeof Date.prototype.setUTCMilliseconds = "function"
+PRESENT: typeof Date.prototype.setUTCMinutes = "function"
+PRESENT: typeof Date.prototype.setUTCMonth = "function"
+PRESENT: typeof Date.prototype.setUTCSeconds = "function"
+PRESENT: typeof Date.prototype.setYear = "function"
+PRESENT: typeof Date.prototype.toDateString = "function"
+PRESENT: typeof Date.prototype.toGMTString = "function"
+PRESENT: typeof Date.prototype.toLocaleDateString = "function"
+PRESENT: typeof Date.prototype.toLocaleString = "function"
+PRESENT: typeof Date.prototype.toLocaleTimeString = "function"
+PRESENT: typeof Date.prototype.toString = "function"
+PRESENT: typeof Date.prototype.toTimeString = "function"
+PRESENT: typeof Date.prototype.toUTCString = "function"
+PRESENT: typeof Date.prototype.valueOf = "function"
+MISSING: Date.prototype.toISOString
+MISSING: Date.prototype.toJSON
+MISSING: Date.prototype.toLocaleFormat
+MISSING: Date.prototype.toSource
+
+PRESENT: typeof String.fromCharCode = "function"
+MISSING: String.fromCodePoint
+MISSING: String.raw
+
+PRESENT: typeof String.prototype.constructor = "function"
+PRESENT: typeof String.prototype.length = "number"
+PRESENT: typeof String.prototype.charAt = "function"
+PRESENT: typeof String.prototype.charCodeAt = "function"
+PRESENT: typeof String.prototype.concat = "function"
+PRESENT: typeof String.prototype.indexOf = "function"
+PRESENT: typeof String.prototype.lastIndexOf = "function"
+PRESENT: typeof String.prototype.localeCompare = "function"
+PRESENT: typeof String.prototype.match = "function"
+PRESENT: typeof String.prototype.replace = "function"
+PRESENT: typeof String.prototype.search = "function"
+PRESENT: typeof String.prototype.slice = "function"
+PRESENT: typeof String.prototype.split = "function"
+PRESENT: typeof String.prototype.substr = "function"
+PRESENT: typeof String.prototype.substring = "function"
+PRESENT: typeof String.prototype.toLocaleLowerCase = "function"
+PRESENT: typeof String.prototype.toLocaleUpperCase = "function"
+PRESENT: typeof String.prototype.toLowerCase = "function"
+PRESENT: typeof String.prototype.toString = "function"
+PRESENT: typeof String.prototype.toUpperCase = "function"
+PRESENT: typeof String.prototype.valueOf = "function"
+MISSING: String.prototype.codePointAt
+MISSING: String.prototype.includes
+MISSING: String.prototype.endsWith
+MISSING: String.prototype.matchAll
+MISSING: String.prototype.normalize
+MISSING: String.prototype.padEnd
+MISSING: String.prototype.padStart
+MISSING: String.prototype.quote
+MISSING: String.prototype.repeat
+MISSING: String.prototype.startsWith
+MISSING: String.prototype.toSource
+MISSING: String.prototype.trim
+MISSING: String.prototype.trimStart
+MISSING: String.prototype.trimLeft
+MISSING: String.prototype.trimEnd
+MISSING: String.prototype.trimRight
+
+PRESENT: typeof RegExp.prototype.constructor = "function"
+PRESENT: typeof RegExp.prototype.global = "boolean"
+PRESENT: typeof RegExp.prototype.ignoreCase = "boolean"
+PRESENT: typeof RegExp.prototype.multiline = "boolean"
+PRESENT: typeof RegExp.prototype.source = "string"
+PRESENT: typeof RegExp.prototype.compile = "function"
+PRESENT: typeof RegExp.prototype.exec = "function"
+PRESENT: typeof RegExp.prototype.test = "function"
+PRESENT: typeof RegExp.prototype.toString = "function"
+MISSING: RegExp.prototype.flags
+MISSING: RegExp.prototype.dotAll
+MISSING: RegExp.prototype.sticky
+MISSING: RegExp.prototype.unicode
+MISSING: RegExp.prototype.toSource
+MISSING: RegExp.prototype.match
+MISSING: RegExp.prototype.matchAll
+MISSING: RegExp.prototype.replace
+MISSING: RegExp.prototype.search
+MISSING: RegExp.prototype.split
+
+MISSING: Array.from
+MISSING: Array.isArray
+MISSING: Array.of
+
+PRESENT: typeof Array.prototype.constructor = "function"
+PRESENT: typeof Array.prototype.length = "number"
+PRESENT: typeof Array.prototype.pop = "function"
+PRESENT: typeof Array.prototype.push = "function"
+PRESENT: typeof Array.prototype.reverse = "function"
+PRESENT: typeof Array.prototype.shift = "function"
+PRESENT: typeof Array.prototype.sort = "function"
+PRESENT: typeof Array.prototype.splice = "function"
+PRESENT: typeof Array.prototype.unshift = "function"
+PRESENT: typeof Array.prototype.concat = "function"
+PRESENT: typeof Array.prototype.join = "function"
+PRESENT: typeof Array.prototype.slice = "function"
+PRESENT: typeof Array.prototype.toString = "function"
+PRESENT: typeof Array.prototype.toLocaleString = "function"
+MISSING: Array.prototype.copyWithin
+MISSING: Array.prototype.fill
+MISSING: Array.prototype.includes
+MISSING: Array.prototype.indexOf
+MISSING: Array.prototype.lastIndexOf
+MISSING: Array.prototype.toSource
+MISSING: Array.prototype.entries
+MISSING: Array.prototype.every
+MISSING: Array.prototype.filter
+MISSING: Array.prototype.find
+MISSING: Array.prototype.findIndex
+MISSING: Array.prototype.forEach
+MISSING: Array.prototype.keys
+MISSING: Array.prototype.map
+MISSING: Array.prototype.reduce
+MISSING: Array.prototype.reduceRight
+MISSING: Array.prototype.some
+MISSING: Array.prototype.values
+*/
 
 
 
@@ -432,10 +1120,39 @@ Function.prototype.bind = function() {
 [] --include [url]
 
 
+--clear-[property]
+--remove-[property]
+
 any property besides 
 
 
+UserScript Headers:
+@name
+@namespace
+@version
+@author
+@description
+@homepage @homepageURL @website @source
+@icon @iconURL @defaulticon
+@icon64 @icon64URL
+@updateURL
+@downloadURL
+@supportURL
+[@include]
+[@match]
+[@exclude]
+[@require]
+[@resource]
+[@connect]
+@run-at [document-start|document-body|document-end|document-idle|context-menu]
+[@grant] [unsafeWindow|GM_(addStyle,deleteValue,listValues,addValueChangeListener,removeValueChangeListener,setValue,getValue,log,getResourceText,getResourceURL,registerMenuCommand,unregisterMenuCommand,openInTab,xmlhttpRequest,download,getTab,saveTab,getTabs,notification,setClipboard,info)]
+@noframes
+@unwrap
+@nocompat
 
+
+https://tampermonkey.net/documentation.php?version=4.9.5921&ext=fire&show=fire
+https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects
 */
 
 var default_template = {
@@ -517,47 +1234,6 @@ function outputDefaultScript() {
     WriteFile(path + script_name, default_template.script);
 }
 
-function main() {
-/*
-    WScript.Echo();
-    WScript.Echo("Dumping stuff...");
-    Dump(Object);
-    return;
-*/
-    var arguments = WScript.Arguments;
-    var shell = WScript.CreateObject("WScript.Shell");
-    //WScript.Echo("Total Arguments: " + arguments.length);
-    //var arglist = [];
-    //var i;
-
-    //for (i = 0; i < arguments.length; i += 1) {
-    //    arglist.push(arguments(i));
-    //}
-
-    //WScript.Echo("ARGUMENTS: " + arglist.join(" "));
-
-    //WScript.Echo();
-    //WScript.Echo("Testing wmi...");
-    var cmdline = getCommandLineArguments();
-    //WScript.Echo("Calculated Arguments: " + cmdline);
-
-
-    //WScript.Echo();
-    //WScript.Echo("Testing script host parse...");
-    cmdline = parseCommandLineArguments(cmdline);
-    //dumpArguments(cmdline);
-    WScript.Echo();
-    WScript.Echo("Arguments: " + cmdline.indexed.length);
-    //WScript.Echo("JSON: " + JSON.stringify(cmdline));
-    if (cmdline.indexed.length === 0) {
-        outputDefaultScript();
-    }
-    /*
-    Commandline stress test:
-        rnew testeast asd //nologo """//nologo" " //nologo" astet se "asdf" /asdfas /a:b --abc=d --abc=" asdf" --abc:"def" --def "abc" --ghi hkl --enable-myshit --yay --fun --no-way "blah" --edge-casing="--edge-casing=\"--edge-casing=\\\"\\\"\"" --disable-myshit --myshit "real" "tight" --like=a "boss" yo --bonkers yo yo yo a a --no a a a
-    */
-}
-
 function dumpArguments(cmdline) {
     var i;
     var j;
@@ -565,6 +1241,8 @@ function dumpArguments(cmdline) {
     var key;
 
     //indexed, named, keys
+    WScript.Echo();
+    WScript.Echo("Arguments: " + cmdline.indexed.length);
     WScript.Echo("Indexed Parameters");
     for (i = 0; i < cmdline.indexed.length; i += 1) {
         if (cmdline.indexed[i].name !== undefined) {
@@ -971,490 +1649,79 @@ function Dump(object) {
     WScript.Echo(JSON.stringify(object));
 }
 
+function RunShell() {
+    var wsh = WScript.CreateObject("WScript.Shell");
+    var std_in = WScript.StdIn;
+    var std_out = WScript.StdOut;
+    var line = "";
+    var result = undefined;
+    while(true) {
+        std_out.WriteLine("");
+        std_out.Write("JavaScript > ");
+        line += std_in.ReadLine();
+        line = line.trim();
+        if ((line.length > 0) && (!line.endsWith("\\"))) {
+            if (line.toLowerCase() === "exit" || line.toLowerCase() === "quit") {
+                return;
+            }
+            try {
+                result = eval("(function(){" + line + "})()");
+            } catch (e) {
+                std_out.WriteLine(e.name + ": " + e.message);
+                line = "";
+                continue;
+            }
+            line = "";
+            DumpResults(result);
+            result = undefined;
+        }
+    }
+}
 
+function DumpResults(object) {
+    switch (typeof object) {
+    case "number":
+        WScript.Echo("" + object);
+        break;
+    case "string":
+        WScript.Echo("\"" + object.replace(/\\/g,"\\\\").replace(/\"/g,"\\\"") + "\"");
+        break;
+    case "object":
+        if (object === null) {
+            WScript.Echo("null");
+        } else {
+            Dump(object);
+        }
+        break;
+    case "boolean":
+        WScript.Echo(object ? "true" : "false");
+        break;
+    case "undefined":
+        WScript.Echo("undefined");
+        break;
+    case "function":
+        WScript.Echo("[Function object]");
+        break;
+    }
+}
+
+
+function main() {
+/*
+    RunShell();
+    return;
+*/
+    var arguments = WScript.Arguments;
+    var shell = WScript.CreateObject("WScript.Shell");
+    var cmdline = parseCommandLineArguments(getCommandLineArguments());
+
+    if (cmdline.indexed.length === 0) {
+        outputDefaultScript();
+    }
+    /*
+    Commandline stress test:
+        rnew testeast asd //nologo """//nologo" " //nologo" astet se "asdf" /asdfas /a:b --abc=d --abc=" asdf" --abc:"def" --def "abc" --ghi hkl --enable-myshit --yay --fun --no-way "blah" --edge-casing="--edge-casing=\"--edge-casing=\\\"\\\"\"" --disable-myshit --myshit "real" "tight" --like=a "boss" yo --bonkers yo yo yo a a --no a a a
+    */
+}
 
 main();
-
-/*
-
-
-toSource missing across the board
-
-Number.prototype
-Boolean.prototype
-
-
-MISSING: this.Map
-MISSING: this.Set
-MISSING: this.JSON
-MISSING: this.Promise
-MISSING: this.Generator
-MISSING: this.GeneratorFunction
-MISSING: this.Reflect
-MISSING: this.Proxy
-
-MISSING: Object.assign
-MISSING: Object.create
-MISSING: Object.defineProperty
-MISSING: Object.defineProperties
-MISSING: Object.entries
-MISSING: Object.freeze
-MISSING: Object.fromEntries
-MISSING: Object.getOwnPropertyDescriptor
-MISSING: Object.getOwnPropertyDescriptors
-MISSING: Object.getOwnPropertyNames
-MISSING: Object.getOwnPropertySymbols
-MISSING: Object.getPrototypeOf
-MISSING: Object.is
-MISSING: Object.isExtensible
-MISSING: Object.isFrozen
-MISSING: Object.isSealed
-MISSING: Object.keys
-MISSING: Object.preventExtensions
-MISSING: Object.seal
-MISSING: Object.setPrototypeOf
-MISSING: Object.values
-
-PRESENT: typeof Object.prototype.constructor = "function"
-PRESENT: typeof Object.prototype.hasOwnProperty = "function"
-PRESENT: typeof Object.prototype.isPrototypeOf = "function"
-PRESENT: typeof Object.prototype.propertyIsEnumerable = "function"
-PRESENT: typeof Object.prototype.toLocaleString = "function"
-PRESENT: typeof Object.prototype.toString = "function"
-PRESENT: typeof Object.prototype.valueOf = "function"
-
-
-
-MISSING: Number.EPSILON
-MISSING: Number.MAX_SAFE_INTEGER
-MISSING: Number.MIN_SAFE_INTEGER
-MISSING: Number.isNaN
-MISSING: Number.isFinite
-MISSING: Number.isInteger
-MISSING: Number.isSafeInteger
-MISSING: Number.toInteger
-MISSING: Number.parseFloat
-MISSING: Number.parseInt
-
-
-
-MISSING: Math.acosh
-MISSING: Math.asinh
-MISSING: Math.atanh
-MISSING: Math.cbrt
-MISSING: Math.clz32
-MISSING: Math.cosh
-MISSING: Math.expm1
-MISSING: Math.fround
-MISSING: Math.hypot
-MISSING: Math.imul
-MISSING: Math.log1p
-MISSING: Math.log10
-MISSING: Math.log2
-MISSING: Math.sign
-MISSING: Math.sinh
-MISSING: Math.tanh
-MISSING: Math.trunc
-
-MISSING: Date.now
-
-MISSING: Date.prototype.toISOString
-MISSING: Date.prototype.toJSON
-
-MISSING: String.fromCodePoint
-MISSING: String.raw
-
-MISSING: String.prototype.matchAll
-MISSING: String.prototype.normalize
-
-MISSING: RegExp.prototype.flags
-MISSING: RegExp.prototype.dotAll
-MISSING: RegExp.prototype.sticky
-MISSING: RegExp.prototype.unicode
-MISSING: RegExp.prototype.match
-MISSING: RegExp.prototype.matchAll
-MISSING: RegExp.prototype.replace
-MISSING: RegExp.prototype.search
-MISSING: RegExp.prototype.split
-
-MISSING: Array.from
-MISSING: Array.isArray
-MISSING: Array.of
-
-MISSING: Array.prototype.entries
-MISSING: Array.prototype.keys
-MISSING: Array.prototype.reduce
-MISSING: Array.prototype.reduceRight
-MISSING: Array.prototype.values
-*/
-
-
-/*
-
-
-
-
-
-
-
-
-ORIGINAL::::
-
-
-
-
-
-
-
-
-
-
-
-
-
-PRESENT: typeof this.eval = "function"
-MISSING: this.uneval
-PRESENT: typeof this.isFinite = "function"
-PRESENT: typeof this.isNaN = "function"
-PRESENT: typeof this.parseFloat = "function"
-PRESENT: typeof this.parseInt = "function"
-PRESENT: typeof this.decodeURI = "function"
-PRESENT: typeof this.decodeURIComponent = "function"
-PRESENT: typeof this.encodeURI = "function"
-PRESENT: typeof this.encodeURIComponent = "function"
-PRESENT: typeof this.escape = "function"
-PRESENT: typeof this.unescape = "function"
-PRESENT: typeof this.Infinity = "number"
-PRESENT: typeof this.NaN = "number"
-MISSING: this.undefined
-MISSING: this.null
-MISSING: this.globalThis
-PRESENT: typeof this.Object = "function"
-PRESENT: typeof this.Function = "function"
-PRESENT: typeof this.Boolean = "function"
-MISSING: this.Symbol
-PRESENT: typeof this.Error = "function"
-PRESENT: typeof this.EvalError = "function"
-MISSING: this.InternalError
-PRESENT: typeof this.RangeError = "function"
-PRESENT: typeof this.ReferenceError = "function"
-PRESENT: typeof this.SyntaxError = "function"
-PRESENT: typeof this.TypeError = "function"
-PRESENT: typeof this.URIError = "function"
-PRESENT: typeof this.Number = "function"
-MISSING: this.BigInt
-PRESENT: typeof this.Math = "object"
-PRESENT: typeof this.Date = "function"
-PRESENT: typeof this.String = "function"
-PRESENT: typeof this.RegExp = "function"
-PRESENT: typeof this.Array = "function"
-MISSING: this.Int8Array
-MISSING: this.Uint8Array
-MISSING: this.Uint8ClampedArray
-MISSING: this.Int16Array
-MISSING: this.Uint16Array
-MISSING: this.Int32Array
-MISSING: this.Uint32Array
-MISSING: this.Float32Array
-MISSING: this.Float64Array
-MISSING: this.Map
-MISSING: this.Set
-MISSING: this.WeakMap
-MISSING: this.WeakSet
-MISSING: this.ArrayBuffer
-MISSING: this.SharedArrayBuffer
-MISSING: this.Atomics
-MISSING: this.DataView
-MISSING: this.JSON
-MISSING: this.Promise
-MISSING: this.Generator
-MISSING: this.GeneratorFunction
-MISSING: this.AsyncFunction
-MISSING: this.Reflect
-MISSING: this.Proxy
-MISSING: this.Intl
-MISSING: this.WebAssembly
-
-MISSING: Object.assign
-MISSING: Object.create
-MISSING: Object.defineProperty
-MISSING: Object.defineProperties
-MISSING: Object.entries
-MISSING: Object.freeze
-MISSING: Object.fromEntries
-MISSING: Object.getOwnPropertyDescriptor
-MISSING: Object.getOwnPropertyDescriptors
-MISSING: Object.getOwnPropertyNames
-MISSING: Object.getOwnPropertySymbols
-MISSING: Object.getPrototypeOf
-MISSING: Object.is
-MISSING: Object.isExtensible
-MISSING: Object.isFrozen
-MISSING: Object.isSealed
-MISSING: Object.keys
-MISSING: Object.preventExtensions
-MISSING: Object.seal
-MISSING: Object.setPrototypeOf
-MISSING: Object.values
-
-PRESENT: typeof Object.prototype.constructor = "function"
-MISSING: Object.prototype.__proto__
-MISSING: Object.prototype.__noSuchMethod__
-MISSING: Object.prototype.__count__
-MISSING: Object.prototype.__parent__
-MISSING: Object.prototype.__defineGetter__
-MISSING: Object.prototype.__defineSetter__
-MISSING: Object.prototype.__lookupGetter__
-MISSING: Object.prototype.__lookupSetter__
-PRESENT: typeof Object.prototype.hasOwnProperty = "function"
-PRESENT: typeof Object.prototype.isPrototypeOf = "function"
-PRESENT: typeof Object.prototype.propertyIsEnumerable = "function"
-MISSING: Object.prototype.toSource
-PRESENT: typeof Object.prototype.toLocaleString = "function"
-PRESENT: typeof Object.prototype.toString = "function"
-MISSING: Object.prototype.unwatch
-PRESENT: typeof Object.prototype.valueOf = "function"
-MISSING: Object.prototype.watch
-MISSING: Object.prototype.eval
-
-MISSING: Function.prototype.arguments
-MISSING: Function.prototype.arity
-MISSING: Function.prototype.caller
-PRESENT: typeof Function.prototype.length = "number"
-MISSING: Function.prototype.name
-MISSING: Function.prototype.displayName
-PRESENT: typeof Function.prototype.constructor = "function"
-PRESENT: typeof Function.prototype.apply = "function"
-MISSING: Function.prototype.bind
-PRESENT: typeof Function.prototype.call = "function"
-MISSING: Function.prototype.isGenerator
-MISSING: Function.prototype.toSource
-PRESENT: typeof Function.prototype.toString = "function"
-
-PRESENT: typeof Boolean.prototype.constructor = "function"
-MISSING: Boolean.prototype.toSource
-PRESENT: typeof Boolean.prototype.toString = "function"
-PRESENT: typeof Boolean.prototype.valueOf = "function"
-
-MISSING: Number.EPSILON
-MISSING: Number.MAX_SAFE_INTEGER
-PRESENT: typeof Number.MAX_VALUE = "number"
-MISSING: Number.MIN_SAFE_INTEGER
-PRESENT: typeof Number.MIN_VALUE = "number"
-PRESENT: typeof Number.NaN = "number"
-PRESENT: typeof Number.NEGATIVE_INFINITY = "number"
-PRESENT: typeof Number.POSITIVE_INFINITY = "number"
-MISSING: Number.isNaN
-MISSING: Number.isFinite
-MISSING: Number.isInteger
-MISSING: Number.isSafeInteger
-MISSING: Number.toInteger
-MISSING: Number.parseFloat
-MISSING: Number.parseInt
-
-PRESENT: typeof Number.prototype.toExponential = "function"
-PRESENT: typeof Number.prototype.toFixed = "function"
-PRESENT: typeof Number.prototype.toLocaleString = "function"
-PRESENT: typeof Number.prototype.toPrecision = "function"
-MISSING: Number.prototype.toSource
-PRESENT: typeof Number.prototype.toString = "function"
-PRESENT: typeof Number.prototype.valueOf = "function"
-
-PRESENT: typeof Math.E = "number"
-PRESENT: typeof Math.LN2 = "number"
-PRESENT: typeof Math.LN10 = "number"
-PRESENT: typeof Math.LOG2E = "number"
-PRESENT: typeof Math.LOG10E = "number"
-PRESENT: typeof Math.PI = "number"
-PRESENT: typeof Math.SQRT1_2 = "number"
-PRESENT: typeof Math.SQRT2 = "number"
-PRESENT: typeof Math.abs = "function"
-PRESENT: typeof Math.acos = "function"
-MISSING: Math.acosh
-PRESENT: typeof Math.asin = "function"
-MISSING: Math.asinh
-PRESENT: typeof Math.atan = "function"
-MISSING: Math.atanh
-PRESENT: typeof Math.atan2 = "function"
-MISSING: Math.cbrt
-PRESENT: typeof Math.ceil = "function"
-MISSING: Math.clz32
-PRESENT: typeof Math.cos = "function"
-MISSING: Math.cosh
-PRESENT: typeof Math.exp = "function"
-MISSING: Math.expm1
-PRESENT: typeof Math.floor = "function"
-MISSING: Math.fround
-MISSING: Math.hypot
-MISSING: Math.imul
-PRESENT: typeof Math.log = "function"
-MISSING: Math.log1p
-MISSING: Math.log10
-MISSING: Math.log2
-PRESENT: typeof Math.max = "function"
-PRESENT: typeof Math.min = "function"
-PRESENT: typeof Math.pow = "function"
-PRESENT: typeof Math.random = "function"
-PRESENT: typeof Math.round = "function"
-MISSING: Math.sign
-PRESENT: typeof Math.sin = "function"
-MISSING: Math.sinh
-PRESENT: typeof Math.sqrt = "function"
-PRESENT: typeof Math.tan = "function"
-MISSING: Math.tanh
-MISSING: Math.toSource
-MISSING: Math.trunc
-
-MISSING: Date.now
-PRESENT: typeof Date.parse = "function"
-PRESENT: typeof Date.UTC = "function"
-
-PRESENT: typeof Date.prototype.getDate = "function"
-PRESENT: typeof Date.prototype.getDay = "function"
-PRESENT: typeof Date.prototype.getFullYear = "function"
-PRESENT: typeof Date.prototype.getHours = "function"
-PRESENT: typeof Date.prototype.getMilliseconds = "function"
-PRESENT: typeof Date.prototype.getMinutes = "function"
-PRESENT: typeof Date.prototype.getMonth = "function"
-PRESENT: typeof Date.prototype.getSeconds = "function"
-PRESENT: typeof Date.prototype.getTime = "function"
-PRESENT: typeof Date.prototype.getTimezoneOffset = "function"
-PRESENT: typeof Date.prototype.getUTCDate = "function"
-PRESENT: typeof Date.prototype.getUTCDay = "function"
-PRESENT: typeof Date.prototype.getUTCFullYear = "function"
-PRESENT: typeof Date.prototype.getUTCHours = "function"
-PRESENT: typeof Date.prototype.getUTCMilliseconds = "function"
-PRESENT: typeof Date.prototype.getUTCMinutes = "function"
-PRESENT: typeof Date.prototype.getUTCMonth = "function"
-PRESENT: typeof Date.prototype.getUTCSeconds = "function"
-PRESENT: typeof Date.prototype.getYear = "function"
-PRESENT: typeof Date.prototype.setDate = "function"
-PRESENT: typeof Date.prototype.setFullYear = "function"
-PRESENT: typeof Date.prototype.setHours = "function"
-PRESENT: typeof Date.prototype.setMilliseconds = "function"
-PRESENT: typeof Date.prototype.setMinutes = "function"
-PRESENT: typeof Date.prototype.setMonth = "function"
-PRESENT: typeof Date.prototype.setSeconds = "function"
-PRESENT: typeof Date.prototype.setTime = "function"
-PRESENT: typeof Date.prototype.setUTCDate = "function"
-PRESENT: typeof Date.prototype.setUTCFullYear = "function"
-PRESENT: typeof Date.prototype.setUTCHours = "function"
-PRESENT: typeof Date.prototype.setUTCMilliseconds = "function"
-PRESENT: typeof Date.prototype.setUTCMinutes = "function"
-PRESENT: typeof Date.prototype.setUTCMonth = "function"
-PRESENT: typeof Date.prototype.setUTCSeconds = "function"
-PRESENT: typeof Date.prototype.setYear = "function"
-PRESENT: typeof Date.prototype.toDateString = "function"
-MISSING: Date.prototype.toISOString
-MISSING: Date.prototype.toJSON
-PRESENT: typeof Date.prototype.toGMTString = "function"
-PRESENT: typeof Date.prototype.toLocaleDateString = "function"
-MISSING: Date.prototype.toLocaleFormat
-PRESENT: typeof Date.prototype.toLocaleString = "function"
-PRESENT: typeof Date.prototype.toLocaleTimeString = "function"
-MISSING: Date.prototype.toSource
-PRESENT: typeof Date.prototype.toString = "function"
-PRESENT: typeof Date.prototype.toTimeString = "function"
-PRESENT: typeof Date.prototype.toUTCString = "function"
-PRESENT: typeof Date.prototype.valueOf = "function"
-MISSING: Date.prototype.undefined
-
-PRESENT: typeof String.fromCharCode = "function"
-MISSING: String.fromCodePoint
-MISSING: String.raw
-
-PRESENT: typeof String.prototype.constructor = "function"
-PRESENT: typeof String.prototype.length = "number"
-PRESENT: typeof String.prototype.charAt = "function"
-PRESENT: typeof String.prototype.charCodeAt = "function"
-MISSING: String.prototype.codePointAt
-PRESENT: typeof String.prototype.concat = "function"
-MISSING: String.prototype.includes
-MISSING: String.prototype.endsWith
-PRESENT: typeof String.prototype.indexOf = "function"
-PRESENT: typeof String.prototype.lastIndexOf = "function"
-PRESENT: typeof String.prototype.localeCompare = "function"
-PRESENT: typeof String.prototype.match = "function"
-MISSING: String.prototype.matchAll
-MISSING: String.prototype.normalize
-MISSING: String.prototype.padEnd
-MISSING: String.prototype.padStart
-MISSING: String.prototype.quote
-MISSING: String.prototype.repeat
-PRESENT: typeof String.prototype.replace = "function"
-PRESENT: typeof String.prototype.search = "function"
-PRESENT: typeof String.prototype.slice = "function"
-PRESENT: typeof String.prototype.split = "function"
-MISSING: String.prototype.startsWith
-PRESENT: typeof String.prototype.substr = "function"
-PRESENT: typeof String.prototype.substring = "function"
-PRESENT: typeof String.prototype.toLocaleLowerCase = "function"
-PRESENT: typeof String.prototype.toLocaleUpperCase = "function"
-PRESENT: typeof String.prototype.toLowerCase = "function"
-MISSING: String.prototype.toSource
-PRESENT: typeof String.prototype.toString = "function"
-PRESENT: typeof String.prototype.toUpperCase = "function"
-MISSING: String.prototype.trim
-MISSING: String.prototype.trimStart
-MISSING: String.prototype.trimLeft
-MISSING: String.prototype.trimEnd
-MISSING: String.prototype.trimRight
-PRESENT: typeof String.prototype.valueOf = "function"
-
-PRESENT: typeof RegExp.prototype.constructor = "function"
-MISSING: RegExp.prototype.flags
-MISSING: RegExp.prototype.dotAll
-PRESENT: typeof RegExp.prototype.global = "boolean"
-PRESENT: typeof RegExp.prototype.ignoreCase = "boolean"
-PRESENT: typeof RegExp.prototype.multiline = "boolean"
-PRESENT: typeof RegExp.prototype.source = "string"
-MISSING: RegExp.prototype.sticky
-MISSING: RegExp.prototype.unicode
-PRESENT: typeof RegExp.prototype.compile = "function"
-PRESENT: typeof RegExp.prototype.exec = "function"
-PRESENT: typeof RegExp.prototype.test = "function"
-MISSING: RegExp.prototype.toSource
-PRESENT: typeof RegExp.prototype.toString = "function"
-MISSING: RegExp.prototype.match
-MISSING: RegExp.prototype.matchAll
-MISSING: RegExp.prototype.replace
-MISSING: RegExp.prototype.search
-MISSING: RegExp.prototype.split
-
-MISSING: Array.from
-MISSING: Array.isArray
-MISSING: Array.of
-
-PRESENT: typeof Array.prototype.constructor = "function"
-PRESENT: typeof Array.prototype.length = "number"
-MISSING: Array.prototype.copyWithin
-MISSING: Array.prototype.fill
-PRESENT: typeof Array.prototype.pop = "function"
-PRESENT: typeof Array.prototype.push = "function"
-PRESENT: typeof Array.prototype.reverse = "function"
-PRESENT: typeof Array.prototype.shift = "function"
-PRESENT: typeof Array.prototype.sort = "function"
-PRESENT: typeof Array.prototype.splice = "function"
-PRESENT: typeof Array.prototype.unshift = "function"
-PRESENT: typeof Array.prototype.concat = "function"
-MISSING: Array.prototype.includes
-MISSING: Array.prototype.indexOf
-PRESENT: typeof Array.prototype.join = "function"
-MISSING: Array.prototype.lastIndexOf
-PRESENT: typeof Array.prototype.slice = "function"
-MISSING: Array.prototype.toSource
-PRESENT: typeof Array.prototype.toString = "function"
-PRESENT: typeof Array.prototype.toLocaleString = "function"
-MISSING: Array.prototype.entries
-MISSING: Array.prototype.every
-MISSING: Array.prototype.filter
-MISSING: Array.prototype.find
-MISSING: Array.prototype.findIndex
-MISSING: Array.prototype.forEach
-MISSING: Array.prototype.keys
-MISSING: Array.prototype.map
-MISSING: Array.prototype.reduce
-MISSING: Array.prototype.reduceRight
-MISSING: Array.prototype.some
-MISSING: Array.prototype.values
-*/
