@@ -1,0 +1,1 @@
+{"version":"1","name":"Destroy Object sealing methods","description":"Destorys Object.freeze, and Object.seal, and forces Object.defineProperty, and Object.defineProperties to always set \"configurable\" to \"true\"","grant":"unsafeWindow","run-at":"document-start","include":"*"}

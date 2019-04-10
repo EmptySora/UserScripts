@@ -1,0 +1,1 @@
+{"version":"1","name":"Destroy global scope","description":"Completely destroys every possible object in the window global variable.","grant":"unsafeWindow","run-at":"document-start","include":"*"}

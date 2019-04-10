@@ -1,0 +1,1 @@
+{"version":"1","name":"Destroy Encrypted Media Extensions","description":"Destroys all globals for EME","run-at":"document.start","grant":"unsafeWindow","include":"*"}

@@ -1,0 +1,1 @@
+{"version":"1","name":"RemoveOld","description":"keeps a maximum of X posts on the page","include":["*://*.tumblr.com/","*://*.tumblr.com/*"]}

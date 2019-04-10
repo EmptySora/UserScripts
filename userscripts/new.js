@@ -1093,191 +1093,6 @@ MISSING: Array.prototype.values
 
 
 
-//Microsoft JScript file
-
-//new ActiveXObject("COM NAME");
-
-//WScript.Echo
-
-//jesus christ finding references for old jscript is a pain in the ass
-
-//Goddamn look here: https://docs.microsoft.com/en-us/previous-versions//z2b05k8s%28v%3dvs.85%29
-
-//For COM objects, create them with "new ActiveXObject("OLE COM NAME")".
-//We might need "WScript.CreateObject("OLE COM NAME")" instead
-
-//Windows Script Host will bind the interface to javascript.
-//Fields and properties will be accessed like fields
-//Functions are self explanatory.
-
-//Honestly, through COM, you could actually use DOT NET
-//which is probably the basis of JScript .NET
-
-/* argument list:
---template [template name]
---name[-locale] [name]
---description[-locale] [description]
-[] --include [url]
-
-
---clear-[property]
---remove-[property]
-
-any property besides 
-
-
-UserScript Headers:
-@name
-@namespace
-@version
-@author
-@description
-@homepage @homepageURL @website @source
-@icon @iconURL @defaulticon
-@icon64 @icon64URL
-@updateURL
-@downloadURL
-@supportURL
-[@include]
-[@match]
-[@exclude]
-[@require]
-[@resource]
-[@connect]
-@run-at [document-start|document-body|document-end|document-idle|context-menu]
-[@grant] [unsafeWindow|GM_(addStyle,deleteValue,listValues,addValueChangeListener,removeValueChangeListener,setValue,getValue,log,getResourceText,getResourceURL,registerMenuCommand,unregisterMenuCommand,openInTab,xmlhttpRequest,download,getTab,saveTab,getTabs,notification,setClipboard,info)]
-@noframes
-@unwrap
-@nocompat
-
-
-https://tampermonkey.net/documentation.php?version=4.9.5921&ext=fire&show=fire
-https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects
-*/
-
-var default_template = {
-    configuration: {
-        "name": "Demo UserScript",
-        "description": "Demonstration of webhosted userscript",
-        "run-at": "document-start",
-        "include": [
-            "*://*.emptysora.com/*",
-            "*://emptysora.com/*",
-            "*://*.emptysora.com/",
-            "*://emptysora.com/"
-        ],
-        "grant": "unsafeWindow",
-        "version": "1"
-    },
-    script: "//this is the contents of the script\r\n" +
-        "function main(){\r\n" +
-        "    //Your Script here\r\n" +
-        "}\r\n" +
-        "if (document.readyState !== \"complete\") {\r\n" +
-        "    window.addEventListener(\"load\",main);\r\n" +  
-        "} else {\r\n" +
-        "    main();\r\n" +
-        "}"
-};
-var output_path = "C:\\xampp7\\userscripts\\";
-var script_name = "script.user.js";
-var config_name = "config.json";
-
-var fso = WScript.CreateObject("Scripting.FileSystemObject");
-
-function WriteFile(file,contents) {
-    var stream = fso.CreateTextFile(file, true);
-    stream.WriteLine(contents);
-    stream.Close();
-}
-function ReadFile(file) {
-    var stream = fso.OpenAsTextStream(file, 1);
-    var ret = stream.ReadAll();
-    stream.Close();
-    return ret;
-}
-function CreateDirectory(path) {
-    fso.CreateFolder(path);
-}
-function CopyFile(source,destination) {
-    fso.CopyFile(source,destination,true);
-}
-function Exists(path) {
-    return fso.FileExists(path) || fso.FolderExists(path);
-}
-function IsDirectory(path) {
-    return fso.FolderExists(path);
-}
-
-function GetNextScriptId() {
-    WScript.Echo("Getting next script id...");
-    var id = 0;
-    var path = output_path + id + "\\";
-    while(true) {
-        if (!IsDirectory(path)) {
-            break;
-        }
-        id += 1;
-        path = output_path + id + "\\";
-    }
-    WScript.Echo("NEXT ID: " + id);
-    return id;
-}
-
-function outputDefaultScript() {
-    //default_template.configuration.script
-    WScript.Echo("Creating a new script from the default template");
-    var id = GetNextScriptId();
-    var path = output_path + id + "\\";
-    CreateDirectory(path);
-    WriteFile(path + config_name, JSON.stringify(default_template.configuration));
-    WriteFile(path + script_name, default_template.script);
-}
-
-function dumpArguments(cmdline) {
-    var i;
-    var j;
-    var value;
-    var key;
-
-    //indexed, named, keys
-    WScript.Echo();
-    WScript.Echo("Arguments: " + cmdline.indexed.length);
-    WScript.Echo("Indexed Parameters");
-    for (i = 0; i < cmdline.indexed.length; i += 1) {
-        if (cmdline.indexed[i].name !== undefined) {
-            if (typeof cmdline.indexed[i].value === "boolean") {
-                WScript.Echo(cmdline.indexed[i].name + ": " +  (cmdline.indexed[i].value ? "true" : "false"));
-            } else {
-                WScript.Echo(cmdline.indexed[i].name + ": \"" + cmdline.indexed[i].value + "\"");
-            }
-        } else {
-            WScript.Echo("\"" + cmdline.indexed[i].value + "\"");
-        }
-    }
-    WScript.Echo();
-    WScript.Echo("Named Parameters");
-    for (i = 0; i < cmdline.keys.length; i += 1) {
-        key = cmdline.keys[i];
-        value = cmdline.named[key];
-        if (value.constructor && value.constructor === Array) {
-            WScript.Echo(key + ": ");
-            for (j = 0; j < value.length; j += 1) {
-                if (typeof value[j] === "boolean") {
-                    WScript.Echo("    " +  (value[j] ? "true" : "false"));
-                } else {
-                    WScript.Echo("    \"" + value[j] + "\"");
-                }
-            }
-        } else {
-            if (typeof value === "boolean") {
-                WScript.Echo(key + ": " +  (value ? "true" : "false"));
-            } else {
-                WScript.Echo(key + ": \"" + value + "\"");
-            }
-        }
-    }
-}
 /*
 Usage:
 cscript "filename" /nologo [arguments]
@@ -1315,6 +1130,232 @@ WshArguments
     Count()
     ShowUsage()
 */
+//Microsoft JScript file
+
+//new ActiveXObject("COM NAME");
+
+//WScript.Echo
+
+//jesus christ finding references for old jscript is a pain in the ass
+
+//Goddamn look here: https://docs.microsoft.com/en-us/previous-versions//z2b05k8s%28v%3dvs.85%29
+
+//For COM objects, create them with "new ActiveXObject("OLE COM NAME")".
+//We might need "WScript.CreateObject("OLE COM NAME")" instead
+
+//Windows Script Host will bind the interface to javascript.
+//Fields and properties will be accessed like fields
+//Functions are self explanatory.
+
+//Honestly, through COM, you could actually use DOT NET
+//which is probably the basis of JScript .NET
+
+function script_text() {
+    var args = arguments;
+    var len = args.length;
+    var parts = [];
+    var i;
+    for (i = 0; i < len; i += 1) {
+        parts.push(args[i].toString());
+    }
+    return parts.join("\r\n");
+}
+
+
+var default_template = {
+    "configuration": {
+        "name": "Demo UserScript",
+        "description": "Demonstration of webhosted userscript",
+        "run-at": "document-start",
+        "include": [
+            "*://*.emptysora.com/*",
+            "*://emptysora.com/*",
+            "*://*.emptysora.com/",
+            "*://emptysora.com/"
+        ],
+        "grant": "unsafeWindow",
+        "version": "1"
+    },
+    "script": script_text(
+        "//this is the contents of the script",
+        "function main(){",
+        "    //Your Script here",
+        "}",
+        "if (document.readyState !== \"complete\") {",
+        "    window.addEventListener(\"load\",main);",
+        "} else {",
+        "    main();",
+        "}"
+    )
+};
+var templates = {
+    "default": {
+        "name": "Default User Script",
+        "type": "script.user.js",
+        "configuration": default_template.configuration,
+        "script": default_template.script
+    },
+    "coffee-script": {
+        "name": "Default Coffee User Script",
+        "type": "script.user.coffee",
+        "source": "https://gist.github.com/spiralx/2a8fa339b8b9f987de73#file-cs-template-user-coffee",
+        "author": "James Skinner <spiralx@gmail.com> (http://github.com/spiralx)",
+        "configuration": {
+            "name": "New Coffee-Userscript",
+            "description": "Shows you how to use coffeescript compiler",
+            "version": "0",
+            "require": [
+                "http://coffeescript.org/extras/coffee-script.js",
+                "https://ajax.googleapis.com/ajax/libs/jquery/2.2.0/jquery.js",
+                "https://rawgit.com/spiralx/653f2226b08167e4aaf8/raw/e830ed1ff2202102b91eb326f7826613ae9070ed/urijs-all.js",
+                "http://coffeescript.org/extras/coffee-script.js"
+            ],
+            "grant": "none",
+            "run-at": "document-end"
+        },
+        "script": script_text(
+            "/* jshint ignore:start */",
+            "var inline_src = (<><![CDATA[",
+            "/* jshint ignore:end */",
+            "",
+            "# Code...",
+            "",
+            "/* jshint ignore:start */",
+            "]]></>).toString();",
+            "",
+            "var compiled = this.CoffeeScript.compile(inline_src);",
+            "eval(compiled);",
+            "",
+            "/* jshint ignore:end */"
+        )
+    }
+}
+var output_path = "C:\\xampp7\\userscripts\\";
+var script_name = "script.user.js";
+var config_name = "config.json";
+var DEBUG = false;
+
+var fso = WScript.CreateObject("Scripting.FileSystemObject");
+var wsh = WScript.CreateObject("WScript.Shell");
+
+function WriteFile(file,contents) {
+    var stream = fso.CreateTextFile(file, true);
+    stream.WriteLine(contents);
+    stream.Close();
+}
+function ReadFile(file) {
+    var stream = fso.OpenAsTextStream(file, 1);
+    var ret = stream.ReadAll();
+    stream.Close();
+    return ret;
+}
+function CreateDirectory(path) {
+    fso.CreateFolder(path);
+}
+function CopyFile(source,destination) {
+    fso.CopyFile(source,destination,true);
+}
+function Exists(path) {
+    return fso.FileExists(path) || fso.FolderExists(path);
+}
+function IsDirectory(path) {
+    return fso.FolderExists(path);
+}
+
+function Run(command, visible, wait) {
+    if (typeof visible !== "boolean") {
+        visible = false;
+    }
+    visible = (visible)
+        ? 1
+        : 0;
+    if (typeof wait !== "boolean") {
+        wait = false;
+    }
+    wsh.Run(command,visible,wait);
+}
+
+
+
+function GetNextScriptId() {
+    WScript.Echo("Getting next script id...");
+    var id = 0;
+    var path = output_path + id + "\\";
+    while(true) {
+        if (!IsDirectory(path)) {
+            break;
+        }
+        id += 1;
+        path = output_path + id + "\\";
+    }
+    WScript.Echo("NEXT ID: " + id);
+    return id;
+}
+
+function outputDefaultScript() {
+    //default_template.configuration.script
+    WScript.Echo("Creating a new script from the default template");
+    var id = GetNextScriptId();
+    var path = output_path + id + "\\";
+    CreateDirectory(path);
+    WriteFile(path + config_name, JSON.stringify(default_template.configuration));
+    WriteFile(path + script_name, default_template.script);
+}
+function outputDefaultScriptCustomConfig(config) {
+    //default_template.configuration.script
+    WScript.Echo("Creating a new script from the default template");
+    WScript.Echo("Using custom configuration");
+    var id = GetNextScriptId();
+    var path = output_path + id + "\\";
+    CreateDirectory(path);
+    WriteFile(path + config_name, JSON.stringify(config));
+    WriteFile(path + script_name, default_template.script);
+}
+
+function dumpArguments(cmdline) {
+    var i;
+    var j;
+    var value;
+    var key;
+
+    //indexed, named, keys
+    WScript.Echo();
+    WScript.Echo("Arguments: " + cmdline.length);
+    WScript.Echo("Indexed Parameters");
+    for (i = 0; i < cmdline.indexed.length; i += 1) {
+        if (cmdline.indexed[i].name !== undefined) {
+            if (typeof cmdline.indexed[i].value === "boolean") {
+                WScript.Echo(cmdline.indexed[i].name + ": " +  (cmdline.indexed[i].value ? "true" : "false"));
+            } else {
+                WScript.Echo(cmdline.indexed[i].name + ": \"" + cmdline.indexed[i].value + "\"");
+            }
+        } else {
+            WScript.Echo("\"" + cmdline.indexed[i].value + "\"");
+        }
+    }
+    WScript.Echo();
+    WScript.Echo("Named Parameters");
+    for (i = 0; i < cmdline.keys.length; i += 1) {
+        key = cmdline.keys[i];
+        value = cmdline.named[key];
+        if (value.constructor && value.constructor === Array) {
+            WScript.Echo(key + ": ");
+            for (j = 0; j < value.length; j += 1) {
+                if (typeof value[j] === "boolean") {
+                    WScript.Echo("    " +  (value[j] ? "true" : "false"));
+                } else {
+                    WScript.Echo("    \"" + value[j] + "\"");
+                }
+            }
+        } else {
+            if (typeof value === "boolean") {
+                WScript.Echo(key + ": " +  (value ? "true" : "false"));
+            } else {
+                WScript.Echo(key + ": \"" + value + "\"");
+            }
+        }
+    }
+}
 
 
 //Jesus, the hell you have to go through to do this...
@@ -1330,7 +1371,7 @@ function getCommandLineArguments() {
     var guid = WScript.CreateObject("Scriptlet.TypeLib").GUID.substr(0,38);
 
     //Start a process using the indicated flag inside its command line
-    WScript.CreateObject("WScript.Shell").Run("\"" + FLAG_PROCESS + "\" " + guid, 0, false);
+    wsh.Run("\"" + FLAG_PROCESS + "\" " + guid, 0, false);
 
     //To retrieve process information a WMI reference is needed
     var wmi = GetObject("winmgmts:{impersonationLevel=impersonate}!\\\\.\\root\\cimv2");
@@ -1600,7 +1641,19 @@ function parseCommandLineArguments(args) {
     var matches = {
         indexed: parameters_object,
         named: {},
-        keys: []
+        keys: [],
+        length: parameters_object.length,
+        count: parameters_object.length,
+        search: {
+            indexed: {
+                keys: parameters_object.map(function (obj) {
+                    return obj.name;
+                }),
+                values: parameters_object.map(function (obj) {
+                    return obj.value;
+                })
+            }
+        }
     };
     for (i = 0; i < parameters_object.length; i += 1) {
         matchj = parameters_object[i];
@@ -1728,24 +1781,305 @@ function help() {
     echo("        sucks.");
 }
 
-function main() {
+function clConfigParser(command_line) {
+    var forbidden = [
+        "namespace","author","homepage","homepageURL","website","source",
+        "icon","iconURL","defaulticon","icon64","icon64URL","updateURL",
+        "downloadURL","supportURL","resource","screenshot","css"
+    ];
+    var allowed = [
+        "name","description","version","include","match","exclude",
+        "connect","run-at","grant","noframes","unwrap","nocompat",
+        "require"
+    ];
+    var runat = [
+        "document-start","document-body","document-end","document-idle",
+        "context-menu"
+    ];
+    var grant = [
+        "unsafeWindow","GM_addStyle","GM_deleteValue","GM_listValues",
+        "GM_addValueChangeListener","GM_removeValueChangeListener",
+        "GM_setValue","GM_getValue","GM_log","GM_getResourceText",
+        "GM_getResourceURL","GM_registerMenuCommand","GM_unregisterMenuCommand",
+        "GM_openInTab","GM_xmlhttpRequest","GM_download","GM_getTab",
+        "GM_saveTab","GM_getTabs","GM_notification","GM_setClipboard","GM_info"
+    ]
+    /*
+    */
+    var argument;
+    var i;
+    var argname;
+    var argname_original;
+    var argname_mod;
+    var configuration = JSON.parse(JSON.stringify(default_template.configuration)); //hax
+    var keys = [];
+    //stringify and then parsing it results in a deep clone.
+    
+    for (i = 0; i < command_line.length; i += 1) {
+        argument = command_line.indexed[i];
+        if (typeof argument.name !== "string") {
+            continue; //skip unnamed arguments
+        }
+        argname_mod = "";
+        argname_original = argument.name;
+        argname = argname_original.toLowerCase();
+        if (argname.startsWith("replace-")) {
+            argname_mod = "replace";
+            argname = argname.substr("replace-".length);
+        } else if (argname.startsWith("clear-") && argname !== "clear-all") {
+            argname_mod = "clear";
+            argname = argname.substr("clear-".length);
+        } else if (argname.startsWith("remove-") && argname !== "remove-all") {
+            argname_mod = "clear";
+            argname = argname.substr("clear-".length);
+        } else if (argname === "remove-all") {
+            argname === "clear-all";
+        }
+
+        if (argname === "clear-all") {
+            configuration = {};
+            keys = [];
+            continue;
+        } else if (argname_mod === "clear") {
+            if (configuration[argname] !== undefined) {
+                configuration[argname] = undefined;
+                keys.splice(keys.indexOf(argname),1);
+            }
+            continue;
+        } else if (argname_mod === "replace") {
+            if (configuration[argname] !== undefined) {
+                configuration[argname] = undefined;
+            }
+        }
+        if (argument.value === undefined || argument.value === null) {
+            continue;
+        }
+        if (allowed.indexOf(argname) !== -1) {
+            if (configuration[argname] === undefined) {
+                configuration[argname] = [];
+            }
+            if (keys.indexOf(argname) === -1) {
+                keys.push(argname);
+            }
+        }
+        switch (argname) {
+            case "namespace":
+            case "author":
+            case "homepage":
+            case "homepageurl":
+            case "website":
+            case "source":
+            case "updateurl":
+            case "downloadurl":
+            case "suppporturl":
+                echo("WARNING: Argument --" + argument.name + " will be ignored.");
+                echo("REASON: @" + argument.name + "is automatically generated.");
+                break;
+            case "icon":
+            case "iconurl":
+            case "defaulticon":
+            case "icon64":
+            case "icon64url":
+            case "resource":
+            case "screenshot":
+            case "css":
+                echo("WARNING: Argument --" + argument.name + " will be ignored.");
+                echo("REASON: @" + argument.name + "is currently not supported in this utility.");
+                echo("Please manually add the resource to the created userscript.");
+                echo("The server will automatically detect, and append the propery configuration entries.");
+                switch (argname) {
+                    case "icon":
+                    case "iconurl":
+                    case "defaulticon":
+                        echo("Icons should be placed in the script directory like /userscripts/3/icon.png");
+                        break;
+                    case "icon64":
+                    case "icon64url":
+                        echo("64x64 Icons should be placed in the script directory like /userscripts/3/icon64.png");
+                        break;
+                    case "resource":
+                        echo("Resources should be placed in the script directory like /userscripts/3/resources/yourresource.txt");
+                        break;
+                    case "screenshot":
+                        echo("Screenshots should be placed in the script directory like /userscripts/3/screenshots/screenshot.png");
+                        break;
+                    case "css":
+                        echo("Cascading Style Sheets should be placed in the script directory like /userscripts/3/css/style.css");
+                        break;
+                }
+                break;
+            case "name":
+                if (typeof argument.value !== "boolean") {
+                    configuration.name = [argument.value];
+                }
+                break;
+            case "description":
+                if (typeof argument.value !== "boolean") {
+                    configuration.description = [argument.value];
+                }
+                break;
+            case "version":
+                if (typeof argument.value !== "boolean") {
+                    configuration.version = [argument.value];
+                }
+                break;
+            case "include":
+                if (typeof argument.value !== "boolean") {
+                    configuration.include.push(argument.value);
+                }
+                break;
+            case "match":
+                if (typeof argument.value !== "boolean") {
+                    configuration.match.push(argument.value);
+                }
+                break;
+            case "exclude":
+                if (typeof argument.value !== "boolean") {
+                    configuration.exclude.push(argument.value);
+                }
+                break;
+            case "connect":
+                if (typeof argument.value !== "boolean") {
+                    configuration.connect.push(argument.value);
+                }
+                break;
+            case "run-at"://runat
+                if (typeof argument.value !== "boolean") {
+                    configuration["run-at"] = [argument.value];
+                }
+                break;
+            case "grant"://grant
+                if (typeof argument.value !== "boolean") {
+                    configuration.grant.push(argument.value);
+                }
+                break;
+            case "noframes":
+                configuration.noframes = [true];
+                break;
+            case "unwrap":
+                configuration.unwrap = [true];
+                break;
+            case "nocompat":
+                configuration.nocompat = [true];
+                break;
+            case "require":
+                if (typeof argument.value !== "boolean") {
+                    configuration.require.push(argument.value);
+                }
+                break;
+        }
+    }
+    var len;
+    for (i = 0; i < keys.length; i += 1) {
+        len = configuration[keys[i]].length;
+        if (len === 0) {
+            configuration[keys[i]] = undefined;
+        } else if (len === 1) {
+            configuration[keys[i]] = configuration[keys[i]][0];
+        }
+    }
+    if (DEBUG) {
+        echo("CONFIG: " + JSON.stringify(configuration));
+    }
+    return configuration;
+}
 /*
-    RunShell();
-    return;
+
+    var matches = {
+        indexed: parameters_object,
+        named: {},
+        keys: [],
+        length: parameters_object.length,
+        count: parameters_object.length,
+        search: {
+            indexed: {
+                keys: parameters_object.map(function (obj) {
+                    return obj.name;
+                }),
+                values: parameters_object.map(function (obj) {
+                    return obj.value;
+                })
+            }
+        }
+    };
 */
+
+/* argument list:
+--template [template name]
+--name[-locale] [name]
+--description[-locale] [description]
+[] --include [url]
+
+
+--clear-[property]
+--remove-[property]
+
+any property besides 
+
+
+--sequential --clear-all --clear
+
+UserScript Headers:
+@name
+@namespace
+@version
+@author
+@description
+@homepage @homepageURL @website @source
+@icon @iconURL @defaulticon
+@icon64 @icon64URL
+@updateURL
+@downloadURL
+@supportURL
+[@include]
+[@match]
+[@exclude]
+[@require]
+[@resource]
+[@connect]
+@run-at [document-start|document-body|document-end|document-idle|context-menu]
+[@grant] [unsafeWindow|GM_(addStyle,deleteValue,listValues,addValueChangeListener,removeValueChangeListener,setValue,getValue,log,getResourceText,getResourceURL,registerMenuCommand,unregisterMenuCommand,openInTab,xmlhttpRequest,download,getTab,saveTab,getTabs,notification,setClipboard,info)]
+@noframes
+@unwrap
+@nocompat
+
+forbidden:
+    @namespace @author @homepage @homepageURL @website @source
+    @icon @iconURL @defaulticon @icon64 @icon64URL @updateURL
+    @downloadURL @supportURL @require @resource
+allowed:
+    @name, @description, @version, @include, @match, @exclude, @connect,
+    @run-at, @grant, @noframes, @unwrap, @nocompat
+
+
+https://tampermonkey.net/documentation.php?version=4.9.5921&ext=fire&show=fire
+https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects
+*/
+
+function main() {
     var arguments = WScript.Arguments;
     var shell = WScript.CreateObject("WScript.Shell");
     var cmdline = parseCommandLineArguments(getCommandLineArguments());
 
+    if (cmdline.keys.indexOf("debug") !== -1) {
+        DEBUG = true;
+        dumpArguments(cmdline);
+    }
     if (cmdline.indexed.length === 0) {
         outputDefaultScript();
-    }
-    if (cmdline.keys.indexOf("help") !== -1) {
+        return;
+    } else if (cmdline.keys.indexOf("help") !== -1) {
         help();
         return;
-    }
-    if (cmdline.keys.indexOf("shell") !== -1) {
+    } else if (cmdline.keys.indexOf("shell") !== -1) {
         RunShell();
+    } else if (cmdline.keys.indexOf("sequential") !== -1) {
+        if (DEBUG) {
+            clConfigParser(cmdline);
+        } else {
+            outputDefaultScriptCustomConfig(clConfigParser(cmdline));
+        }
+        //clConfigParser(cmdline);
     }
     /*
     Commandline stress test:
