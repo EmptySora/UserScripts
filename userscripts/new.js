@@ -1551,23 +1551,23 @@ function parseCommandLineArguments(args) {
                 if (arg_name !== undefined && arg_name.trim().length > 0) {
                     parameters_object.push({name: arg_name, value: arg_value});
                     last_key = arg_name;
-                    echo("Setting last key to: " + arg_name);
-                    echo("Setting last value to: " + arg_value);
+                    //echo("Setting last key to: " + arg_name);
+                    //echo("Setting last value to: " + arg_value);
                 } else if (last_key !== null) {
                     parameters_object.push({name: last_key, value: arg_value});
-                    echo("Propagating against: " + last_key);
+                    //echo("Propagating against: " + last_key);
                 } else {
                     parameters_object.push({name: undefined, value: arg_value});
                 }
             } else if (matches[i].startsWith("-") || matches[i].startsWith("/")) {
                 parameters_object.push({name: arg_name, value: true});
                 last_key = arg_name;
-                echo("Setting last key to: " + arg_name);
-                echo("Setting last value to: true");
+                //echo("Setting last key to: " + arg_name);
+                //echo("Setting last value to: true");
             } else {
                 if (last_key !== null) {
                     parameters_object.push({name: last_key, value: arg_name});
-                    echo("Propagating against: " + last_key);
+                    //echo("Propagating against: " + last_key);
                 } else {
                     parameters_object.push({name: undefined, value: arg_name});
                 }
@@ -1655,6 +1655,7 @@ function RunShell() {
     var std_out = WScript.StdOut;
     var line = "";
     var result = undefined;
+    std_out.WriteLine("Type \"quit\" or \"exit\" and press enter to quit.")
     while(true) {
         std_out.WriteLine("");
         std_out.Write("JavaScript > ");
@@ -1665,7 +1666,7 @@ function RunShell() {
                 return;
             }
             try {
-                result = eval("(function(){" + line + "})()");
+                result = eval("(function(){ return (" + line + "); })()");
             } catch (e) {
                 std_out.WriteLine(e.name + ": " + e.message);
                 line = "";
@@ -1705,6 +1706,27 @@ function DumpResults(object) {
     }
 }
 
+function help() {
+    echo("New userscript template utility (v1.0)");
+    echo("");
+    echo("USAGE: NEW [options]");
+    echo("");
+    echo("OPTIONS:");
+    echo("    --help        Displays this message.");
+    echo("    --shell       Run an interactive javascript shell, for debugging.");
+    echo("");
+    echo("EXAMPLES:");
+    echo("    NEW");
+    echo("        Creates a new userscript based off the default template.");
+    echo("");
+    echo("    NEW --help");
+    echo("        Displays this message.");
+    echo("");
+    echo("    NEW --shell");
+    echo("        Run an interactive debugging shell. This is mainly used to");
+    echo("        determine the capabilities of JScript, given it, bluntly,");
+    echo("        sucks.");
+}
 
 function main() {
 /*
@@ -1717,6 +1739,13 @@ function main() {
 
     if (cmdline.indexed.length === 0) {
         outputDefaultScript();
+    }
+    if (cmdline.keys.indexOf("help") !== -1) {
+        help();
+        return;
+    }
+    if (cmdline.keys.indexOf("shell") !== -1) {
+        RunShell();
     }
     /*
     Commandline stress test:
