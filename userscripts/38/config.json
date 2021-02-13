@@ -1,0 +1,1 @@
+{"name":"IETF RFC Dark Mode","description":"Dark Mode to appease my mind","run-at":"document-start","match":["https://tools.ietf.org/html/rfc*","http://tools.ietf.org/html/rfc*"],"version":"1"}

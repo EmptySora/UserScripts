@@ -1,0 +1,1 @@
+{"name":"Delete batch","description":"Autoselects settings for deleting files in a batch","run-at":"document-start","match":["https://wiki.godvillegame.com/index.php?title=File:*","https://wiki.godvillegame.com/File:*"],"grant":"none","version":"1"}

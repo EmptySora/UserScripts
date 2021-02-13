@@ -1,0 +1,1 @@
+{"name":"GodWiki file categorizing helper","description":"pulls a list of files from the wiki and goes through each one of them to categorize them.","run-at":"document-start","match":["https://wiki.godvillegame.com/Main_Page","https://wiki.godvillegame.com/*File:*"],"noframes":"true","version":"1"}
