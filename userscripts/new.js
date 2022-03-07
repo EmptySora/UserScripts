@@ -1321,37 +1321,41 @@ function dumpArguments(cmdline) {
     //indexed, named, keys
     WScript.Echo();
     WScript.Echo("Arguments: " + cmdline.length);
-    WScript.Echo("Indexed Parameters");
-    for (i = 0; i < cmdline.indexed.length; i += 1) {
-        if (cmdline.indexed[i].name !== undefined) {
-            if (typeof cmdline.indexed[i].value === "boolean") {
-                WScript.Echo(cmdline.indexed[i].name + ": " +  (cmdline.indexed[i].value ? "true" : "false"));
+    if (cmdline.indexed) {
+        WScript.Echo("Indexed Parameters");
+        for (i = 0; i < cmdline.indexed.length; i += 1) {
+            if (cmdline.indexed[i].name !== undefined) {
+                if (typeof cmdline.indexed[i].value === "boolean") {
+                    WScript.Echo(cmdline.indexed[i].name + ": " +  (cmdline.indexed[i].value ? "true" : "false"));
+                } else {
+                    WScript.Echo(cmdline.indexed[i].name + ": \"" + cmdline.indexed[i].value + "\"");
+                }
             } else {
-                WScript.Echo(cmdline.indexed[i].name + ": \"" + cmdline.indexed[i].value + "\"");
+                WScript.Echo("\"" + cmdline.indexed[i].value + "\"");
             }
-        } else {
-            WScript.Echo("\"" + cmdline.indexed[i].value + "\"");
         }
     }
     WScript.Echo();
-    WScript.Echo("Named Parameters");
-    for (i = 0; i < cmdline.keys.length; i += 1) {
-        key = cmdline.keys[i];
-        value = cmdline.named[key];
-        if (value.constructor && value.constructor === Array) {
-            WScript.Echo(key + ": ");
-            for (j = 0; j < value.length; j += 1) {
-                if (typeof value[j] === "boolean") {
-                    WScript.Echo("    " +  (value[j] ? "true" : "false"));
-                } else {
-                    WScript.Echo("    \"" + value[j] + "\"");
+    if (cmdline.keys) {
+        WScript.Echo("Named Parameters");
+        for (i = 0; i < cmdline.keys.length; i += 1) {
+            key = cmdline.keys[i];
+            value = cmdline.named[key];
+            if (value.constructor && value.constructor === Array) {
+                WScript.Echo(key + ": ");
+                for (j = 0; j < value.length; j += 1) {
+                    if (typeof value[j] === "boolean") {
+                        WScript.Echo("    " +  (value[j] ? "true" : "false"));
+                    } else {
+                        WScript.Echo("    \"" + value[j] + "\"");
+                    }
                 }
-            }
-        } else {
-            if (typeof value === "boolean") {
-                WScript.Echo(key + ": " +  (value ? "true" : "false"));
             } else {
-                WScript.Echo(key + ": \"" + value + "\"");
+                if (typeof value === "boolean") {
+                    WScript.Echo(key + ": " +  (value ? "true" : "false"));
+                } else {
+                    WScript.Echo(key + ": \"" + value + "\"");
+                }
             }
         }
     }
